@@ -43,11 +43,11 @@
                 salary : 0
             };
             var _callbacks = {
-                basic :null,
-                hra : null,
-                da : null,
-                tax : null,
-                salary : null
+                basic :[],
+                hra : [],
+                da : [],
+                tax : [],
+                salary : []
             };
 
             this.get = function(attrName){
@@ -56,14 +56,16 @@
             this.set = function(attrName, value){
                 if (_data[attrName] === value) return;
                 _data[attrName] = value;
-                var callback = _callbacks[attrName];
-                if (typeof callback === 'function')
-                    callback(value);
+                var callbackFns = _callbacks[attrName];
+                callbackFns.forEach(function(callback){
+                    if (typeof callback === 'function')
+                        callback(value);
+                });
             };
 
             this.subscribe = function(attrName, callbackFn){
                 if (typeof callbackFn === 'function')
-                    _callbacks[attrName] = callbackFn;
+                    _callbacks[attrName].push(callbackFn);
             }
         }
         //behavior
