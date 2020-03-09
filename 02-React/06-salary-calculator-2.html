@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Greeter</title>
+    <title>Salary Calculator</title>
     <script src="react.development.js"></script>
     <script src="react-dom.development.js"></script>
     <script src="babel.min.js"></script>
@@ -81,7 +81,7 @@
             
             render = () => {
                 const { model } = this.props,
-                    { basic, hra, da, tax, salary } = model.toJSON();
+                    data = model.toJSON();
                 return(
                    <section>
                     <div className="field">
@@ -103,6 +103,16 @@
                     <div className="field">
                         <input type="button" value="Calculate" id="btnCalculate" onClick={this.onCalculateClick} />
                     </div>
+                    <SalaryCalculatorResult data={data} />
+                </section>
+                );
+            }
+        }
+
+        class SalaryCalculatorResult extends React.Component{
+            render = () => {
+                const { basic, hra, da, tax, salary } = this.props.data;
+                return(
                     <div className="field">
                         <table>
                             <tbody>
@@ -116,8 +126,7 @@
                             </tbody>
                         </table>
                     </div>
-                </section>
-                );
+                )
             }
         }
 
