@@ -41,6 +41,10 @@
                 this._list.push(newProductName);
                 this.emitChange();
             }
+            toggle(product){
+                product.isOutOfStock = !product.isOutOfStock;
+                this.emitChange();
+            }
         }
 
 
@@ -51,19 +55,18 @@
             onAddNewClick = () => {
                 const { newProductName } = this.state,
                     { productsCollection } = this.props;
-                productsCollection.addNew(newProductName);
+                const newProduct = { name : newProductName, isOutOfStock : false };
+                productsCollection.addNew(newProduct);
             }
+            
             render = () => {
-                const productNames = this.props.productsCollection.getAll();
-                const productItems = productNames.map((productName, index) => (
-                    <li key={index}>
-                        <span>{productName}</span>
-                        <input type="button" value="Toggle Out Of Stock" />
-                    </li>
+                const products = this.props.productsCollection.getAll();
+                const productItems = products.map((product, index) => (
+                    <ProductItem key={index} product={product} />
                 ));
                 return (
                     <div>
-                        <h1 className="outOfStock">Products</h1>
+                        <h1>Products</h1>
                         <hr/>
                         
                         <label htmlFor="">Product Name :</label>
@@ -77,14 +80,30 @@
             }
         }
 
+        class ProductItem extends React.Component{
+            onProductNameClick = (product) => {
+                this.props.productsCollection.toggle(product);
+            }
+            render = () => {
+                const { product } = this.props;
+                return(
+                    <li>
+                        { product.isOutOfStock ? (<span className="outOfStock">{product.name}</span>) : (<span>{product.name}</span>) }
+                        <input type="button" value="Toggle Out Of Stock" onClick={() => this.onProductNameClick(product)} />
+                    </li>
+                )
+            }
+        }
+
         class ProductsCount extends React.Component{
             render = () => {
-                const { data } = this.props;
+                const { products } = this.props,
+                    outOfStockCount = products.reduce((result, product) => product.isOutOfStock ? ++result : result, 0 );
                 return(
                     <div>
-                        <span className="outOfStock"> [# of Out of Stock] </span>
+                        <span className="outOfStock"> {outOfStockCount} </span>
                         <span> / </span>
-                        <span> [# of products] </span>
+                        <span> {products.length} </span>
                     </div>
                 )
             }
@@ -92,11 +111,10 @@
 
         class App extends React.Component{
             render = () => {
-                const { model } = this.props,
-                    count = model.getAll().length;
+                const { model } = this.props;
                 return (
                     <div>
-                        <ProductsCount data={count}/>
+                        <ProductsCount products={model.getAll()}/>
                         <Products productsCollection={model}/>
                     </div>
                 )
