@@ -25,6 +25,11 @@
             padding-right: 10px;
             font-size: 18pt;
         }
+
+        .error{
+            border : 1px solid red;
+            background-color: blanchedalmond;
+        }
     </style>
     <script type="text/babel">
         function SalaryCalculatorModel(){
@@ -87,7 +92,7 @@
                         <SalaryCalculatorInput labelText="Basic :" onValueChange={ value => model.set('basic', value) }/>
                         <SalaryCalculatorInput labelText="HRA :" onValueChange={ value => model.set('hra', value) }/>
                         <SalaryCalculatorInput labelText="DA :" onValueChange={ value => model.set('da', value) }/>    
-                        <SalaryCalculatorInput labelText="Tax :" type="range" onValueChange={ value => model.set('tax', value) } min="0" max="30" defaultValue="0"/>
+                        <SalaryCalculatorInput labelText="Tax :" type="range" onValueChange={ value => model.set('tax', value) } min="0" max="30" />
                         <div className="field">
                             <input type="button" value="Calculate" id="btnCalculate" onClick={this.onCalculateClick} />
                         </div>
@@ -97,19 +102,51 @@
             }
         }
 
-        class SalaryCalculatorInput extends React.Component{
+        /* class SalaryCalculatorInput extends React.Component{
+            state = { invalid : false };
+
+            onTextChange = (evt) => {
+                const valueAsString = evt.target.value;
+                if (valueAsString === ''){
+                    this.setState({ invalid : true })
+                } else {
+                    this.setState({invalid : false});
+                    this.props.onValueChange(evt.target.valueAsNumber);
+                }
+            }
+
             render = () => {
                 const { labelText, onValueChange, type='number', ...attrs } = this.props;
+                const { invalid } = this.state;
                 return(
                     <div className="field">
                         <label htmlFor="">{labelText}</label>
-                        <input type={type} onChange={ evt => onValueChange(evt.target.valueAsNumber) } {...attrs}/>
+                        <input className={invalid ? 'error' : ''} type={type} onChange={ this.onTextChange } {...attrs}/>
                     </div>
                 )
             }
-        }
+        } */
 
-        class SalaryCalculatorResult extends React.Component{
+        const SalaryCalculatorInput = ({ labelText, onValueChange, type='number', ...attrs }) => {
+            const [ invalid, setInvalid ] = React.useState(false);
+            const onTextChange = (evt) => {
+                const valueAsString = evt.target.value;
+                if (valueAsString === ''){
+                    setInvalid(true);
+                } else {
+                    setInvalid(false);
+                    onValueChange(evt.target.valueAsNumber);
+                }
+            };
+            return(
+                <div className="field">
+                    <label htmlFor="">{labelText}</label>
+                    <input className={invalid ? 'error' : ''} type={type} onChange={ onTextChange } {...attrs}/>
+                </div>
+            );
+        };
+
+       /*  class SalaryCalculatorResult extends React.Component{
             render = () => {
                 const { basic, hra, da, tax, salary } = this.props.data;
                 return(
@@ -128,7 +165,27 @@
                     </div>
                 )
             }
-        }
+        } */
+
+        /* Functional Components */
+        const SalaryCalculatorResult = (props) => {
+            const { basic, hra, da, tax, salary } = props.data;
+            return(
+                <div className="field">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td id="tdBasic">{basic}</td>
+                                <td id="tdHra">{hra}</td>
+                                <td id="tdDa">{da}</td>
+                                <td id="tdTax">{tax}</td>
+                                <td id="tdSalary">{salary}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            )
+        };
 
         const model = new SalaryCalculatorModel();
         function renderCalculator(){
