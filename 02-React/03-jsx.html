@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>React Intro</title>
+    <script src="react.development.js"></script>
+    <script src="react-dom.development.js"></script>
+    <script src="babel.min.js"></script>
+    <script type="text/babel">
+        window.addEventListener('load', init);
+        function init(){
+            var btnRender = document.getElementById('btnRender');
+            btnRender.addEventListener('click', onBtnRenderClick);
+        }
+        var counter = 0;
+        function onBtnRenderClick(){
+            ++counter;
+            //document.getElementById('count').innerText = counter;
+            var appEle = (
+                <div>
+                    <h1>Welcome to React.js</h1>
+                    <hr/>
+                    <div>
+                        <span>Click Counter : </span>
+                        <span>{counter}</span>
+                    </div>
+                    <section>
+                        <h3>Introduction</h3>
+                        <p>Minim excepteur incididunt ex elit in laborum mollit excepteur fugiat commodo cupidatat anim consequat. Labore do quis nisi laborum nisi sunt non eu. Exercitation do consectetur pariatur irure excepteur voluptate ipsum irure. Et magna quis eiusmod magna nulla ad elit non sit laboris laborum aute fugiat excepteur. Culpa commodo in non Lorem enim consectetur et et aute amet reprehenderit. Do occaecat minim esse do nostrud qui aliquip deserunt.</p>
+                        <p>Occaecat labore ea aute deserunt culpa ipsum. Ipsum sunt quis culpa nostrud. Excepteur ipsum eu ea quis do est fugiat aliqua cillum fugiat laborum sunt excepteur. Culpa Lorem quis tempor ipsum. Est minim commodo aliquip excepteur sint sit laborum sint consequat. Laborum et nisi exercitation ipsum ullamco enim. Elit elit non exercitation culpa ad est.</p>
+                    </section>
+                    <section>
+                        <h3>Advantages</h3>
+                        <ol>
+                            <li>Efficient</li>
+                            <li>Declarative</li>
+                        </ol>
+                    </section>
+                </div>
+            )
+            ReactDOM.render(appEle, document.getElementById('root'));
+        }
+    </script>
+</head>
+<body>
+    <input type="button" value="Render" id="btnRender">
+    <div id="root"></div>
+</body>
+</html>
