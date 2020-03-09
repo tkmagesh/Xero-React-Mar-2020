@@ -1,7 +1,8 @@
 var StateManager = (function(){
     var _currentState = undefined,
         _callbacks = [],
-        _reducer = undefined;
+        _reducer = undefined,
+        _init_action = { type : '@@INIT/ACTION' };
 
     function getState(){
         return _currentState;
@@ -25,6 +26,7 @@ var StateManager = (function(){
 
     function createStore(reducer){
         _reducer = reducer;
+        _currentState = _reducer(_currentState, _init_action);
         var store = { getState, subscribe, dispatch };
         return store;
     }
