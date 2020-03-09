@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Products</title>
+    <style>
+        .outOfStock {
+            color : red;
+            text-decoration: line-through;
+            font-style: italic;
+            font-weight: bold;
+        }
+    </style>
     <script src="react.development.js"></script>
     <script src="react-dom.development.js"></script>
     <script src="babel.min.js"></script>
@@ -46,10 +54,16 @@
                 productsCollection.addNew(newProductName);
             }
             render = () => {
-                const productItems = this.props.productsCollection.getAll().map((productName, index) => (<li key={index}>{productName}</li>));
+                const productNames = this.props.productsCollection.getAll();
+                const productItems = productNames.map((productName, index) => (
+                    <li key={index}>
+                        <span>{productName}</span>
+                        <input type="button" value="Toggle Out Of Stock" />
+                    </li>
+                ));
                 return (
                     <div>
-                        <h1>Products</h1>
+                        <h1 className="outOfStock">Products</h1>
                         <hr/>
                         
                         <label htmlFor="">Product Name :</label>
@@ -68,8 +82,9 @@
                 const { data } = this.props;
                 return(
                     <div>
-                        <span> Count : </span>
-                        <span>{data}</span>
+                        <span className="outOfStock"> [# of Out of Stock] </span>
+                        <span> / </span>
+                        <span> [# of products] </span>
                     </div>
                 )
             }
