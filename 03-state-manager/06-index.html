@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>State Manager</title>
+    <script src="state-manager.js"></script>
+    <script src="react.development.js"></script>
+    <script src="react-dom.development.js"></script>
+    <script src="babel.min.js"></script>
+    <script>
+    /* 
+    function spinnerReducer(currentState = 0, action){
+        if (action.type === 'UP') return ++currentState;
+        if (action.type === 'DOWN') return --currentState;
+        return currentState;
+    }
+    var store = StateManager.createStore(spinnerReducer)
+    store.getState()
+    0
+    var upAction = { type : 'UP' };
+
+    store.dispatch(upAction)
+    store.getState()
+    1
+    store.dispatch(upAction)
+    store.getState()
+    2
+    store.subscribe(() => console.log(`current state = ${store.getState()}`))
+    store.dispatch(upAction)
+    store.dispatch(upAction)
+    var downAction = { type : 'DOWN' }
+    store.dispatch(downAction)
+    store.dispatch(downAction)
+    store.dispatch(downAction)
+    store.dispatch(downAction)
+    store.dispatch(downAction)
+    store.dispatch({type : 'DUMMY'})
+    
+    */
+    </script>
+    <script type="text/babel">
+        /* 
+            1. initial implementation
+            2. remove the dependency on the store from the component
+            3. introducing action creators ( the responsibility of creating an action is removed from the component)
+            4. introducing spinner action dispatchers
+            5. simplifying access to action dispatcher methods
+            6. Spinner as a functional component
+        */
+        function spinnerReducer(currentState = 0, action){
+            if (action.type === 'UP') return ++currentState;
+            if (action.type === 'DOWN') return --currentState;
+            return currentState;
+        }
+        var store = StateManager.createStore(spinnerReducer)
+
+        /* 
+        class Spinner extends React.Component{
+            render = () => {
+                const { value, up, down } = this.props;
+                return(
+                    <div>
+                        <h3>Spinner</h3>
+                        <hr/>
+                        <input type="button" value="DOWN" onClick={down}/>
+                        <span> [ {value} ] </span>
+                        <input type="button" value="UP" onClick={up}/>
+                    </div>
+                )
+            }
+        } */
+
+        const Spinner = ({ value, up, down }) => (
+            <div>
+                <h3>Spinner</h3>
+                <hr/>
+                <input type="button" value="DOWN" onClick={down}/>
+                <span> [ {value} ] </span>
+                <input type="button" value="UP" onClick={up}/>
+            </div>
+        );
+
+        const spinnerActionCreators = {
+            up(){
+                const action = { type : 'UP' };
+                return action;
+            },
+            down(){
+                const action = { type : 'DOWN' };
+                return action;
+            }
+        }
+
+        function bindSpinnerActionCreators(actionCreators, dispatch){
+            const actionDispatchers = {
+                up(){
+                    const action = actionCreators.up();
+                    dispatch(action);
+                },
+                down(){
+                    const action = actionCreators.down();
+                    dispatch(action);
+                }
+            };
+            return actionDispatchers;
+        }
+
+        const actionDispatchers = bindSpinnerActionCreators(spinnerActionCreators, store.dispatch);
+
+        function renderApp(){
+            const value = store.getState();
+            ReactDOM.render(
+                /* <Spinner value={value} up={actionDispatchers.up} down={actionDispatchers.down} />, */
+                <Spinner value={value} {...actionDispatchers} />,
+                document.getElementById('root'));
+        }
+        renderApp();
+        store.subscribe(renderApp);
+    </script>
+</head>
+<body>
+    <h1>State Manager</h1>
+    <div id="root"></div>
+</body>
+</html>
