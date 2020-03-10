@@ -174,7 +174,7 @@
             </li>
         );
 
-        class BugTracker extends React.Component{
+        /* class BugTracker extends React.Component{
             render = () => {
                 const { bugs, addNew, toggle, remove, removeClosed } = this.props;
                 return(
@@ -186,7 +186,16 @@
                     </React.Fragment>
                 )
             }
-        }
+        } */
+
+        const BugTracker = ({ bugs, addNew, toggle, remove, removeClosed }) => (
+            <React.Fragment>
+                <BugStats bugs={bugs} />
+                <BugSort />
+                <BugEdit addNew={addNew} />
+                <BugList {...{bugs, toggle, remove, removeClosed}} />
+            </React.Fragment>
+        );
 
         const store = Redux.createStore(bugsReducer);
         const bugActionDispatchers = Redux.bindActionCreators(bugActionCreators, store.dispatch);
