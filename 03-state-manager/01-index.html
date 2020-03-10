@@ -6,6 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>State Manager</title>
     <script src="state-manager.js"></script>
+    <script src="react.development.js"></script>
+    <script src="react-dom.development.js"></script>
+    <script src="babel.min.js"></script>
     <script>
     /* 
     function spinnerReducer(currentState = 0, action){
@@ -37,8 +40,47 @@
     
     */
     </script>
+    <script type="text/babel">
+        function spinnerReducer(currentState = 0, action){
+            if (action.type === 'UP') return ++currentState;
+            if (action.type === 'DOWN') return --currentState;
+            return currentState;
+        }
+        var store = StateManager.createStore(spinnerReducer)
+
+        class Spinner extends React.Component{
+            onDownClick = () => {
+                const downAction = { type : 'DOWN' };
+                this.props.store.dispatch(downAction);
+            }
+            onUpClick = () => {
+                const upAction = { type : 'UP' };
+                this.props.store.dispatch(upAction);
+            }
+            render = () =>{
+                const value = this.props.store.getState();
+                return(
+                    <div>
+                        <h3>Spinner</h3>
+                        <hr/>
+                        <input type="button" value="DOWN" onClick={this.onDownClick}/>
+                        <span> [ {value} ] </span>
+                        <input type="button" value="UP" onClick={this.onUpClick}/>
+                    </div>
+                )
+            }
+        }
+
+        function renderApp(){
+            ReactDOM.render(<Spinner store={store} />,
+                document.getElementById('root'));
+        }
+        renderApp();
+        store.subscribe(renderApp);
+    </script>
 </head>
 <body>
     <h1>State Manager</h1>
+    <div id="root"></div>
 </body>
 </html>
