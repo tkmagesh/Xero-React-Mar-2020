@@ -41,12 +41,12 @@
         }
     </style>
     <script type="text/usecases">
-        1. Add new bugs
-        2. List the bugs
-        3. Toggle the 'closed' status of any bug
-        4. Remove any bug
-        5. Remove closed bugs
-        6. Display stats ( # of closed bugs / total # of bugs )
+        (done) 1. Add new bugs
+        (done) 2. List the bugs
+        (done) 3. Toggle the 'closed' status of any bug
+        (done) 4. Remove any bug
+        (done) 5. Remove closed bugs
+        (done) 6. Display stats ( # of closed bugs / total # of bugs )
         7. Sort the bugs
         8. Persist the bugs in the server
         9. Make the bugs accessible using unique URL
@@ -61,8 +61,23 @@
         function bugsReducer(currentState = [], action){
             if (action.type === 'ADD_NEW_BUG'){
                 const { newBug } = action;
-                currentState.push(newBug);
-                return currentState;
+                const newState = [...currentState, newBug ];
+                return newState;
+            }
+            if (action.type === 'REPLACE_BUG'){
+                const { bugToReplace } = action;
+                const newState = currentState.map(bug => bug.id === bugToReplace.id ? bugToReplace : bug);
+                return newState;
+            }
+            if (action.type === 'REMOVE_BUG'){
+                const { bugToRemove } = action;
+                const newState = currentState.filter(bug => bug.id !== bugToRemove.id);
+                return newState;
+            }
+            if(action.type === 'REMOVE_BUGS'){
+                const { bugsToRemove } = action;
+                const newState = currentState.filter(bug => !bugsToRemove.find(bugToRemove => bugToRemove.id === bug.id));
+                return newState;
             }
             return currentState;
         }
@@ -79,6 +94,20 @@
                 };
                 const action = { type : 'ADD_NEW_BUG', newBug : newBug }
                 return action;
+            },
+            toggle(bugToToggle){
+                const toggledBug = { ...bugToToggle, isClosed : !bugToToggle.isClosed };
+                const action = { type : 'REPLACE_BUG', bugToReplace : toggledBug }
+                return action;
+            },
+            remove(bugToRemove){
+                const action = { type : 'REMOVE_BUG', bugToRemove };
+                return action;
+            },
+            removeClosed(bugs){
+                const bugsToRemove = bugs.filter(bug => bug.isClosed);
+                const action = { type : 'REMOVE_BUGS', bugsToRemove };
+                return action;
             }
         }
 
@@ -86,11 +115,22 @@
             state = { newBugName : '' };
             render = () => {
                 const { newBugName } = this.state,
-                    { bugs, addNew } = this.props;
+                    { bugs, addNew, toggle, remove, removeClosed } = this.props,
+                    closedCount = bugs.reduce((result, bug) => bug.isClosed ? ++result : result, 0),
+                    bugItems = bugs.map(bug => (
+                        <li key={bug.id}>
+                            { bug.isClosed ? 
+                                (<span className="bugname closed" onClick={() => toggle(bug)}>{bug.name}</span>) : 
+                                (<span className="bugname" onClick={() => toggle(bug)}>{bug.name}</span>)
+                            }
+                            <div className="datetime">{bug.createdAt.toString()}</div>
+                            <input type="button" value="Delete" onClick={() => remove(bug)} />
+                        </li>
+                    ))
                 return(
                     <React.Fragment>
                         <section className="stats">
-                            <span className="closed">1</span>
+                            <span className="closed">{closedCount}</span>
                             <span> / </span>
                             <span>{bugs.length}</span>
                         </section>
@@ -110,18 +150,9 @@
                         </section>
                         <section className="list">
                             <ol>
-                                <li>
-                                    <span className="bugname">[This is bug - 1]</span>
-                                    <div className="datetime">[created at]</div>
-                                    <input type="button" value="Delete" />
-                                </li>
-                                <li>
-                                    <span className="bugname closed">[This is bug - 2]</span>
-                                    <div className="datetime">[created at]</div>
-                                    <input type="button" value="Delete" />
-                                </li>
+                                {bugItems}
                             </ol>
-                            <input type="button" value="Remove Closed" />
+                            <input type="button" value="Remove Closed" onClick={() => removeClosed(bugs)} />
                         </section>
                     </React.Fragment>
                 )
