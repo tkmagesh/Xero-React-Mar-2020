@@ -1,6 +1,10 @@
-import React, { Fragment } from 'react'
+import React, { Fragment } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
 import views from './views';
 import './index.css';
+import * as bugActionCreators from './actions';
 
 const { BugStats, BugEdit, BugList, BugSort } = views;
 
@@ -15,4 +19,14 @@ const BugTracker = ({ bugs, addNew, toggle, remove, removeClosed }) => (
     </Fragment>
 );
 
-export default BugTracker;
+function mapStateToProps(storeState){
+    const bugs = storeState.bugsData;
+    return { bugs : bugs };
+}
+
+function mapDispatchToProps(dispatch){
+    const bugActionDispatchers = bindActionCreators(bugActionCreators, dispatch);
+    return bugActionDispatchers;
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BugTracker);

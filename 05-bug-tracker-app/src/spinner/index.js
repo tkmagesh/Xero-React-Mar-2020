@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+import spinnerActionCreators from './actions';
 
 const Spinner = ({ value, up, down, doubleUp, doubleDown }) => {
     const [delta, setDelta] = useState(0);
@@ -20,4 +24,14 @@ const Spinner = ({ value, up, down, doubleUp, doubleDown }) => {
     );
 };
 
-export default Spinner;
+function mapStateToProps(storeState){
+    const value = storeState.spinnerData;
+    return { value : value };
+}
+
+function mapDispatchToProps(dispatch){
+    const spinnerActionDispatchers = bindActionCreators(spinnerActionCreators, dispatch);
+    return spinnerActionDispatchers;
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Spinner);
