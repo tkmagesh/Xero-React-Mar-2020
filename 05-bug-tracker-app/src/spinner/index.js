@@ -24,7 +24,7 @@ const Spinner = ({ value, up, down, doubleUp, doubleDown }) => {
     );
 };
 
-function mapStateToProps(storeState){
+/* function mapStateToProps(storeState){
     const value = storeState.spinnerData;
     return { value : value };
 }
@@ -34,4 +34,9 @@ function mapDispatchToProps(dispatch){
     return spinnerActionDispatchers;
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Spinner);
+export default connect(mapStateToProps, mapDispatchToProps)(Spinner); */
+
+export default connect(
+    ({spinnerData}) => ({value : spinnerData}),
+    dispatch => bindActionCreators(spinnerActionCreators, dispatch)
+)(Spinner);

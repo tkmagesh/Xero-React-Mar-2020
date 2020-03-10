@@ -19,7 +19,7 @@ const BugTracker = ({ bugs, addNew, toggle, remove, removeClosed }) => (
     </Fragment>
 );
 
-function mapStateToProps(storeState){
+/* function mapStateToProps(storeState){
     const bugs = storeState.bugsData;
     return { bugs : bugs };
 }
@@ -29,4 +29,9 @@ function mapDispatchToProps(dispatch){
     return bugActionDispatchers;
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(BugTracker);
+export default connect(mapStateToProps, mapDispatchToProps)(BugTracker); */
+
+export default connect(
+    ({bugsData : bugs}) => ({bugs}),
+    dispatch => bindActionCreators(bugActionCreators, dispatch)
+)(BugTracker);
