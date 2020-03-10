@@ -48,10 +48,13 @@
             4. introducing spinner action dispatchers
             5. simplifying access to action dispatcher methods
             6. Spinner as a functional component
+            7. generalization the logic for creating the action dispatcher
         */
         function spinnerReducer(currentState = 0, action){
             if (action.type === 'UP') return ++currentState;
+            if (action.type === 'DOUBLE_UP') return currentState * 2;
             if (action.type === 'DOWN') return --currentState;
+            if (action.type === 'DOUBLE_DOWN') return currentState / 2;
             return currentState;
         }
         var store = StateManager.createStore(spinnerReducer)
@@ -72,10 +75,11 @@
             }
         } */
 
-        const Spinner = ({ value, up, down }) => (
+        const Spinner = ({ value, up, down, doubleUp, doubleDown }) => (
             <div>
                 <h3>Spinner</h3>
                 <hr/>
+                <input type="button" value="DOUBLE DOWN" onClick={doubleDown}/>
                 <input type="button" value="DOWN" onClick={down}/>
                 <span> [ {value} ] </span>
                 <input type="button" value="UP" onClick={up}/>
@@ -95,10 +99,14 @@
             doubleUp(){
                 const action = { type : 'DOUBLE_UP'};
                 return action;
+            },
+            doubleDown(){
+                const action = { type : 'DOUBLE_DOWN'};
+                return action;
             }
         }
 
-        function bindSpinnerActionCreators(actionCreators, dispatch){
+        /* function bindSpinnerActionCreators(actionCreators, dispatch){
             const actionDispatchers = {
                 up(){
                     const action = actionCreators.up();
@@ -107,12 +115,27 @@
                 down(){
                     const action = actionCreators.down();
                     dispatch(action);
+                },
+                doubleUp(){
+                    const action = actionCreators.doubleUp();
+                    dispatch(action);
                 }
             };
             return actionDispatchers;
+        } */
+
+        function bindActionCreators(actionCreators, dispatch){
+            const actionDispatchers = {};
+            for(let key in actionCreators){
+                actionDispatchers[key] = function(...args){
+                    const action = actionCreators[key](...args);
+                    dispatch(action);
+                }
+            }
+            return actionDispatchers;
         }
 
-        const actionDispatchers = bindSpinnerActionCreators(spinnerActionCreators, store.dispatch);
+        const actionDispatchers = bindActionCreators(spinnerActionCreators, store.dispatch);
 
         function renderApp(){
             const value = store.getState();
