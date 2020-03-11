@@ -21,11 +21,17 @@ export function load(){
     return action; 
     */
 
-    return function(dispatch){
+    /* return function(dispatch){
         const p = getServerBugs();
         p.then(function(bugs){
             const action = { type: 'LOAD_BUGS', bugs: bugs }
             dispatch(action); 
         });
+    } */
+
+    return async function (dispatch) {
+        const bugs = await getServerBugs();
+        const action = { type: 'LOAD_BUGS', bugs: bugs }
+        dispatch(action);
     }
 }
