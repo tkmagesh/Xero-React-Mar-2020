@@ -9,13 +9,23 @@ function getLocalBugs(){
 }
 
 function getServerBugs(){
-    axios
+    return axios
         .get('http://localhost:3030/bugs')
         .then(response => response.data)
-        .then(bugs => console.table(bugs));
+        
 }
 export function load(){
+    /* 
     const bugs = getLocalBugs();
-    const action = { type : 'LOAD_BUGS', bugs : bugs }
-    return action;
+    const action = { type: 'LOAD_BUGS', bugs: bugs }
+    return action; 
+    */
+
+    return function(dispatch){
+        const p = getServerBugs();
+        p.then(function(bugs){
+            const action = { type: 'LOAD_BUGS', bugs: bugs }
+            dispatch(action); 
+        });
+    }
 }
