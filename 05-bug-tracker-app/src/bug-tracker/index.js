@@ -8,11 +8,13 @@ import * as bugActionCreators from './actions';
 
 const { BugStats, BugEdit, BugList, BugSort } = views;
 
-const BugTracker = ({ bugs, addNew, toggle, remove, removeClosed }) => (
+const BugTracker = ({ bugs, addNew, toggle, remove, removeClosed, applyFilter }) => (
     <Fragment>
         <h3>Bug Tracker</h3>
+        <label>Apply Filter : </label>
+        <input type="checkbox" onChange={ evt => applyFilter(evt.target.checked)} />
         <hr/>
-        <BugStats bugs={bugs} />
+        <BugStats />
         <BugSort />
         <BugEdit addNew={addNew} />
         <BugList {...{ bugs, toggle, remove, removeClosed }} />
@@ -32,6 +34,6 @@ function mapDispatchToProps(dispatch){
 export default connect(mapStateToProps, mapDispatchToProps)(BugTracker); */
 
 export default connect(
-    ({bugsData : bugs}) => ({bugs}),
+    ({bugsData : bugs, spinnerData, shouldFilter}) => shouldFilter ? ({bugs : bugs.filter(bug => bug.id % 2 === spinnerData % 2)}) : ({bugs}),
     dispatch => bindActionCreators(bugActionCreators, dispatch)
 )(BugTracker);

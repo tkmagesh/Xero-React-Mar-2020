@@ -1,2 +1,3 @@
 import  bugsReducer from './bugsReducer';
-export { bugsReducer };
+import bugsFilterReducer from './bugsFilterReducer'
+export { bugsReducer, bugsFilterReducer };

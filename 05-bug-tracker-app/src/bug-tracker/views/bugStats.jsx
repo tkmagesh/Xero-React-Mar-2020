@@ -1,13 +1,18 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-const BugStats = ({ bugs }) => {
-    const closedCount = bugs.reduce((result, bug) => bug.isClosed ? ++result : result, 0);
+const BugStats = ({ total, closedCount }) => {
     return (
         <section className="stats">
             <span className="closed">{closedCount}</span>
             <span> / </span>
-            <span>{bugs.length}</span>
+            <span>{total}</span>
         </section>
     )
 }
-export default BugStats;
+export default connect(
+    ({bugsData : bugs}) => ({ 
+        total : bugs.length, 
+        closedCount : bugs.reduce((result, bug) => bug.isClosed ? ++result : result, 0)
+    })
+)(BugStats);
