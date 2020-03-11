@@ -8,11 +8,13 @@ import * as bugActionCreators from './actions';
 
 const { BugStats, BugEdit, BugList, BugSort } = views;
 
-const BugTracker = ({ bugs, addNew, toggle, remove, removeClosed, applyFilter }) => (
+const BugTracker = ({ bugs, addNew, toggle, remove, removeClosed, applyFilter, load }) => (
     <Fragment>
         <h3>Bug Tracker</h3>
         <label>Apply Filter : </label>
         <input type="checkbox" onChange={ evt => applyFilter(evt.target.checked)} />
+        <br/>
+        <input type="button" value="LOAD BUGS" onClick={load} />
         <hr/>
         <BugStats />
         <BugSort />

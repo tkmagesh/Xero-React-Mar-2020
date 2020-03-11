@@ -7,6 +7,10 @@ import { Provider } from 'react-redux';
 import appStore from './store';
 import BugTracker from './bug-tracker';
 import Spinner from './spinner';
+
+import axios from 'axios';
+
+window['axios'] = axios;
         
 ReactDOM.render(
     <Provider store={appStore}>
