@@ -1,6 +1,8 @@
-import axios from 'axios';
+import bugApi from '../services/bugApi';
 
-function getLocalBugs(){
+//import axios from 'axios';
+
+/* function getLocalBugs(){
     var bugs = [
         {id : 1, name : 'Sample bug - 1', isClosed : false, createdAt : new Date()},
         { id: 2, name: 'Sample bug - 2', isClosed: true, createdAt: new Date() },
@@ -13,7 +15,7 @@ function getServerBugs(){
         .get('http://localhost:3030/bugs')
         .then(response => response.data)
         
-}
+} */
 export function load(){
     /* 
     const bugs = getLocalBugs();
@@ -35,7 +37,8 @@ export function load(){
         dispatch(action);
     } */
 
-    return getServerBugs()
+    return bugApi
+        .getAll()
         .then(bugs => {
             const action = { type: 'LOAD_BUGS', bugs: bugs }
             return action;

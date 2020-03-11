@@ -1,4 +1,5 @@
 const loggerMiddleware = store => next => action => {
+    console.log('logger middleware');
     console.group(action.type);
     console.log(action);
     console.group('BEFORE DISPATCH');
