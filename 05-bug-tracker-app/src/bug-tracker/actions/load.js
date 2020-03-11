@@ -29,9 +29,15 @@ export function load(){
         });
     } */
 
-    return async function (dispatch) {
+    /* return async function (dispatch) {
         const bugs = await getServerBugs();
         const action = { type: 'LOAD_BUGS', bugs: bugs }
         dispatch(action);
-    }
+    } */
+
+    return getServerBugs()
+        .then(bugs => {
+            const action = { type: 'LOAD_BUGS', bugs: bugs }
+            return action;
+        });
 }
